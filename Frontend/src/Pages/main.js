@@ -1,174 +1,126 @@
-import React from 'react';
-import './main.css';
+import React, { useState } from 'react';
+import './main.css'; 
+import { Search, Bell, Compass, PlusSquare, CheckSquare, User, ChevronRight } from 'lucide-react';
 
-import { FaFilePdf, FaRegQuestionCircle } from 'react-icons/fa';
-import { GoMegaphone } from 'react-icons/go';
-import { BsPerson } from 'react-icons/bs';
-import Header from '../Components/header';
+// --- [Mock 데이터] ---
+const CATEGORIES = [
+  { name: '다이어트', icon: '⚖️' }, { name: '운동', icon: '💪' },
+  { name: '공부', icon: '✏️' }, { name: '돌봄', icon: '👨‍👩‍👧' },
+  { name: '생활습관', icon: '📅' }, { name: '취미', icon: '🎲' },
+  { name: '감정관리', icon: '❤️' }, { name: '외국어', icon: 'Aa' },
+];
 
-export default function Main() {
+const CHALLENGES = [
+  { id: 1, title: '[하루도전] 할일 3가지 쓰기', category: '공식 챌린지', participants: 549, tags: ['매일', '기타'], img: 'https://via.placeholder.com/400x250/eee/888?text=ToDo' },
+  { id: 2, title: '30분 걷기·달리기 (2km)', category: '공식 챌린지', participants: 298, tags: ['주3회', '2주동안'], img: 'https://via.placeholder.com/400x250/eee/888?text=Running' },
+  { id: 3, title: '청소하기', category: '공식 챌린지', participants: 205, tags: ['주2회', '2주동안'], img: 'https://via.placeholder.com/400x250/eee/888?text=Cleaning' },
+  { id: 4, title: '영양제 챙겨 먹기', category: '공식 챌린지', participants: 120, tags: ['매일', '2주동안'], img: 'https://via.placeholder.com/400x250/eee/888?text=Vitamin' },
+  { id: 5, title: '경제 뉴스 기사 읽기', category: '공식 챌린지', participants: 85, tags: ['주5회', '4주동안'], img: 'https://via.placeholder.com/400x250/eee/888?text=News' },
+  { id: 6, title: '하루 물 1L 마시기', category: '공식 챌린지', participants: 340, tags: ['매일', '습관'], img: 'https://via.placeholder.com/400x250/eee/888?text=Water' },
+];
+
+export default function App() {
+  const [activeMenu, setActiveMenu] = useState('홈');
+
   return (
     <div className="app-container">
-      <Header />
-      {/* 2. 서브 네비게이션 */}
-      <nav className="sub-nav">
-        <a href="#" className="active">개인발급여</a>
-        <a href="#">개인연말정산</a>
-      </nav>
+      {/* 1. 상단 헤더 */}
+      <header>
+        <div className="inner-container header-content">
+          <div className="logo">
+            <CheckSquare size={28} color="#ff4d4f" />
+            <span>EveryChall</span>
+          </div>
 
-      {/* 3. 메인 컨텐츠 + 사이드바 래퍼 */}
-      <div className="page-wrapper">
+          <div className="search-bar">
+            <Search size={20} color="#888" />
+            <input type="text" className="search-input" placeholder="어떤 습관을 가지고 싶으신가요?" />
+          </div>
 
-        {/* 3-1. 메인 컨텐츠 (왼쪽 영역) */}
-        <main className="main-content">
-          
-          {/* 상단 6개 메뉴 그리드 */}
-          <section className="menu-grid">
-            <MenuCard 
-              title="전자세금계산서"
-              links={["세금계산서 발급", "화사정보 관리", "거래처 관리", "거래항목 관리"]}
-            />
-            <MenuCard 
-              title="인사급여"
-              links={["임직원관리", "급여대장관리", "4대보험관리", "신규직원입사", "기준직원퇴사", "급여시뮬레이션"]}
-            />
-            <MenuCard 
-              title="회계관리"
-              links={["통장거래관리", "증빙거래관리", "자산관리", "재무제표", "매출거래관리", "공통매입관리"]}
-            />
-            <MenuCard 
-              title="세금납부"
-              links={["세금납부관리", "부가가치세신고", "원천세신고", "과세자료관리", "연말정산신고", "법인세관리"]}
-            />
-            <MenuCard 
-              title="BDMS"
-              links={["BDMS공지", "사내공지", "작업요청", "문의요청", "증명서발급"]}
-            />
-            <MenuCard 
-              title="환경설정"
-              links={["회사정보", "주주명부", "차량관리", "4대보험공단", "급여항목관리"]}
-            />
-          </section>
-
-          {/* 하단 공지사항 및 요청사항 */}
-          <section className="bottom-content">
-            
-            {/* 공지사항 */}
-            <div className="notice-board">
-              <div className="board-header">
-                <h3>공지사항 및 업무매뉴얼</h3>
-                <a href="#" className="more-link">더보기 &gt;</a>
+          {/* PC용 네비게이션 메뉴 */}
+          <nav className="pc-nav">
+            {['홈', '탐색', '피드', '마이페이지'].map(menu => (
+              <div 
+                key={menu} 
+                className={`pc-nav-item ${activeMenu === menu ? 'active' : ''}`}
+                onClick={() => setActiveMenu(menu)}
+              >
+                {menu}
               </div>
-              <ul className="notice-list">
-                <li>
-                  <span>2023.10.26</span>
-                  <strong>[News] 2023년 10월 기준 사업 급여업무 매뉴얼...</strong>
-                  <FaFilePdf className="pdf-icon" />
-                  <span>BDMS</span>
-                  <span>147</span>
-                </li>
-                <li>
-                  <span>2022.01.05</span>
-                  <strong>[News] 2022년 두루누리/일자리안정자금/일용직국...</strong>
-                  <span>BDMS</span>
-                  <span>308</span>
-                </li>
-                <li>
-                  <span>2021.12.16</span>
-                  <strong>[FAQ] 우편물 송달지 변경에 대한 안내</strong>
-                  <span className="pdf-icon-placeholder">국세청</span>
-                  <span>BDMS</span>
-                  <span>153</span>
-                </li>
-                {/* ...기타 항목... */}
-              </ul>
-            </div>
+            ))}
+            <div className="icon-btn"><Bell size={24} color="#333" /></div>
+            <div className="icon-btn"><User size={24} color="#333" /></div>
+            <button className="btn-primary">챌린지 개설</button>
+          </nav>
+        </div>
+      </header>
 
-            {/* 요청 및 업무 리스트 */}
-            <div className="status-boxes">
-              <div className="status-box">
-                <div className="board-header">
-                  <h3>요청 및 질문사항</h3>
-                  <a href="#" className="more-link">더보기 &gt;</a>
+      {/* 2. 메인 컨텐츠 */}
+      <main className="inner-container main-content">
+        
+        {/* 배너 섹션 */}
+        <div className="banner-section">
+          <div className="banner">
+            <div>
+              <h2>지구의 날을 맞아<br />분리배출 실천해요</h2>
+              <p>풀무원 X EveryChall 콜라보레이션</p>
+              <button className="btn-primary" style={{padding: '8px 16px', fontSize: '0.9rem'}}>자세히 보기</button>
+            </div>
+            <div style={{fontSize: '5rem'}}>🌏</div>
+          </div>
+          <div className="side-banner">
+            <h3>신규 가입 혜택</h3>
+            <p style={{color: '#666', marginTop: '10px', fontSize: '0.9rem'}}>지금 시작하면 1,000 포인트 즉시 지급!</p>
+          </div>
+        </div>
+
+        {/* 카테고리 섹션 */}
+        <section style={{marginBottom: '60px'}}>
+          <div className="section-title">
+            카테고리별 챌린지
+            <span className="view-all">전체보기 <ChevronRight size={16} style={{verticalAlign: 'middle'}}/></span>
+          </div>
+          <div className="category-grid">
+            {CATEGORIES.map((cat) => (
+              <div key={cat.name} className="category-item">
+                <div className="cat-icon">{cat.icon}</div>
+                <span className="cat-name">{cat.name}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* 인기 챌린지 리스트 */}
+        <section>
+          <div className="section-title">
+            🔥 실시간 인기 챌린지
+          </div>
+          <div className="card-grid">
+            {CHALLENGES.map((item) => (
+              <div key={item.id} className="card">
+                <div className="card-img-wrapper">
+                  <img src={item.img} alt={item.title} className="card-img" />
+                  <span className="participants-badge">👤 {item.participants}명 참여중</span>
                 </div>
-                <p className="no-content">등록된 요청 및 질문사항이 없습니다.</p>
-              </div>
-              <div className="status-box">
-                <div className="board-header">
-                  <h3>수행하실 업무리스트</h3>
-                  <a href="#" className="more-link">더보기 &gt;</a>
+                <div className="card-body">
+                  <div className="card-cat">{item.category}</div>
+                  <div className="card-title">{item.title}</div>
+                  <div className="card-tags">{item.tags.join(' · ')}</div>
                 </div>
-                <p className="no-content">등록된 업무리스트가 없습니다.</p>
               </div>
-            </div>
-
-          </section>
-        </main>
-
-        {/* 3-2. 사이드바 (오른쪽 영역) */}
-        <aside className="sidebar">
-          
-          {/* 로그인 정보 */}
-          <div className="sidebar-box user-info">
-            <div className="user-info-header">
-              <span>2025년 11월 15일 오후 7:11</span>
-              <button className="logout-button">로그아웃</button>
-            </div>
-            <p className="welcome-message"><strong>김석진 님</strong>, 안녕하세요.</p>
-            <div className="user-actions">
-              <button><GoMegaphone /> 업무요청</button>
-              <button><FaRegQuestionCircle /> 질문답변</button>
-              <button><BsPerson /> 개인정보</button>
-            </div>
+            ))}
           </div>
+        </section>
+      </main>
 
-          {/* 개인정보 */}
-          <div className="sidebar-box">
-            <h4>개인정보 : 급여명세서 ...</h4>
-            <p>4대보험 ... 과세자료관리 ... <a href="#">내역보기</a></p>
-            <p>작업요청 · 증명서발급 ... <a href="#">문의요청</a></p>
-          </div>
-
-          {/* 상담문의 */}
-          <div className="sidebar-box">
-            <h4>상담문의 1544-3572</h4>
-            <p>(월~금 10:00~18:00, 점심 12~13시 제외)</p>
-          </div>
-          
-          {/* 바로가기 링크 */}
-          <div className="sidebar-box quick-links">
-            <a href="#" className="quick-link">BDMS 경영관리시스템 사용안내 &gt;</a>
-            <a href="#" className="quick-link">기업회원 신규가입 및 이용안내 &gt;</a>
-            <a href="#" className="quick-link">기업회원 소속 임직원 이용안내 &gt;</a>
-          </div>
-
-          {/* 오시는 길 */}
-          <div className="sidebar-box quick-links">
-            <a href="#" className="quick-link">오시는 길 &gt;</a>
-          </div>
-
-          {/* 외부 링크 (국세청 등) */}
-          <div className="external-links">
-            <img src="https://via.placeholder.com/130x50.png?text=e세로+로고" alt="e세로" />
-            <img src="https://via.placeholder.com/130x50.png?text=HomeTax+로고" alt="Hometax" />
-          </div>
-
-        </aside>
+      {/* 3. 모바일 전용 하단 네비게이션 (PC에선 숨김) */}
+      <div className="mobile-bottom-nav">
+        <div className="nav-item active"><Compass size={24} /><div>탐색</div></div>
+        <div className="nav-item"><PlusSquare size={24} /><div>개설</div></div>
+        <div className="nav-item"><CheckSquare size={24} /><div>인증</div></div>
+        <div className="nav-item"><User size={24} /><div>MY</div></div>
       </div>
-    </div>
-  );
-}
 
-// 반복되는 메뉴 카드를 위한 재사용 컴포넌트
-function MenuCard({ title, links }) {
-  return (
-    <div className="menu-card">
-      <h3>{title}</h3>
-      <ul>
-        {links.map((link) => (
-          <li key={link}><a href="#">{link}</a></li>
-        ))}
-      </ul>
     </div>
   );
 }
