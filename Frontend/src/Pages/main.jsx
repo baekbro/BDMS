@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; 
 import './main.css'; 
 import { Search, Bell, Compass, PlusSquare, CheckSquare, User, ChevronRight } from 'lucide-react';
 
-// --- [Mock 데이터] ---
 const CATEGORIES = [
   { name: '다이어트', icon: '⚖️' }, { name: '운동', icon: '💪' },
   { name: '공부', icon: '✏️' }, { name: '돌봄', icon: '👨‍👩‍👧' },
@@ -19,8 +19,9 @@ const CHALLENGES = [
   { id: 6, title: '하루 물 1L 마시기', category: '공식 챌린지', participants: 340, tags: ['매일', '습관'], img: 'https://via.placeholder.com/400x250/eee/888?text=Water' },
 ];
 
-export default function App() {
+export default function Main() {
   const [activeMenu, setActiveMenu] = useState('홈');
+  const navigate = useNavigate(); 
 
   return (
     <div className="app-container">
@@ -49,21 +50,25 @@ export default function App() {
               </div>
             ))}
             <div className="icon-btn"><Bell size={24} color="#333" /></div>
-            <div className="icon-btn"><User size={24} color="#333" /></div>
+            <div 
+              className="icon-btn" 
+              onClick={() => navigate('/login')}
+              style={{ cursor: 'pointer' }}
+            >
+              <User size={24} color="#333" />
+            </div>
+            
             <button className="btn-primary">챌린지 개설</button>
           </nav>
         </div>
       </header>
 
-      {/* 2. 메인 컨텐츠 */}
       <main className="inner-container main-content">
-        
-        {/* 배너 섹션 */}
         <div className="banner-section">
           <div className="banner">
             <div>
               <h2>지구의 날을 맞아<br />분리배출 실천해요</h2>
-              <p>풀무원 X EveryChall 콜라보레이션</p>
+              <p>풀무원 X EveryCahll 콜라보레이션</p>
               <button className="btn-primary" style={{padding: '8px 16px', fontSize: '0.9rem'}}>자세히 보기</button>
             </div>
             <div style={{fontSize: '5rem'}}>🌏</div>
@@ -73,8 +78,6 @@ export default function App() {
             <p style={{color: '#666', marginTop: '10px', fontSize: '0.9rem'}}>지금 시작하면 1,000 포인트 즉시 지급!</p>
           </div>
         </div>
-
-        {/* 카테고리 섹션 */}
         <section style={{marginBottom: '60px'}}>
           <div className="section-title">
             카테고리별 챌린지
@@ -89,8 +92,6 @@ export default function App() {
             ))}
           </div>
         </section>
-
-        {/* 인기 챌린지 리스트 */}
         <section>
           <div className="section-title">
             🔥 실시간 인기 챌린지
@@ -112,15 +113,14 @@ export default function App() {
           </div>
         </section>
       </main>
-
-      {/* 3. 모바일 전용 하단 네비게이션 (PC에선 숨김) */}
       <div className="mobile-bottom-nav">
         <div className="nav-item active"><Compass size={24} /><div>탐색</div></div>
         <div className="nav-item"><PlusSquare size={24} /><div>개설</div></div>
         <div className="nav-item"><CheckSquare size={24} /><div>인증</div></div>
-        <div className="nav-item"><User size={24} /><div>MY</div></div>
+        <div className="nav-item" onClick={() => navigate('/login')}>
+          <User size={24} /><div>MY</div>
+        </div>
       </div>
-
     </div>
   );
 }

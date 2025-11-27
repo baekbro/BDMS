@@ -1,0 +1,139 @@
+/* Login.css */
+
+/* 전체 화면 중앙 정렬 */
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  padding: 20px;
+}
+
+/* 로그인 카드 (흰색 박스) */
+.login-card {
+  width: 100%;
+  max-width: 400px; /* PC에선 너무 넓지 않게 */
+  background-color: #fff;
+  border-radius: 16px;
+  padding: 40px 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border: 1px solid #eee;
+  text-align: center;
+}
+
+/* 로고 영역 */
+.login-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #ff4d4f;
+  margin-bottom: 40px;
+}
+
+/* 폼 스타일 */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.input-field {
+  padding: 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.input-field:focus {
+  border-color: #ff4d4f;
+}
+
+/* 로그인 버튼 */
+.btn-login {
+  padding: 15px;
+  background-color: #ff4d4f;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background 0.2s;
+}
+
+.btn-login:hover {
+  background-color: #d9363e;
+}
+
+/* 추가 링크 (아이디 찾기 등) */
+.login-links {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  font-size: 0.85rem;
+  color: #888;
+  margin-bottom: 30px;
+}
+
+.link-item {
+  cursor: pointer;
+}
+
+.link-item:hover {
+  text-decoration: underline;
+}
+
+.divider {
+  color: #ddd;
+}
+
+/* 소셜 로그인 영역 */
+.social-section {
+  border-top: 1px solid #eee;
+  padding-top: 30px;
+}
+
+.social-label {
+  font-size: 0.85rem;
+  color: #999;
+  margin-bottom: 15px;
+  display: block;
+}
+
+.social-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.btn-social {
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  font-size: 0.95rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-kakao {
+  background-color: #fee500;
+  color: #3c1e1e;
+}
+
+.btn-google {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  color: #555;
+}

@@ -1,15 +1,19 @@
-import Main from './Pages/main';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Main from './Pages/main'; 
+import Login from './Pages/login';
 
-export default function App() {
+function App() {
   return (
-    <BrowserRouter>
-     
-
-        <Main />
-
-
-     
-    </BrowserRouter>
+    <div className="App">
+      <Routes>
+      
+        <Route path="/" element={<Main />} />
+       
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </div>
   );
 }
+
+export default App;
