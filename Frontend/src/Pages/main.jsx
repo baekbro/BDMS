@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; 
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios'; 
 import './main.css'; 
 import { Search, Bell, Compass, PlusSquare, CheckSquare, User, ChevronRight } from 'lucide-react';
 
@@ -10,22 +11,47 @@ const CATEGORIES = [
   { name: '감정관리', icon: '❤️' }, { name: '외국어', icon: 'Aa' },
 ];
 
-const CHALLENGES = [
-  { id: 1, title: '[하루도전] 할일 3가지 쓰기', category: '공식 챌린지', participants: 549, tags: ['매일', '기타'], img: 'https://via.placeholder.com/400x250/eee/888?text=ToDo' },
-  { id: 2, title: '30분 걷기·달리기 (2km)', category: '공식 챌린지', participants: 298, tags: ['주3회', '2주동안'], img: 'https://via.placeholder.com/400x250/eee/888?text=Running' },
-  { id: 3, title: '청소하기', category: '공식 챌린지', participants: 205, tags: ['주2회', '2주동안'], img: 'https://via.placeholder.com/400x250/eee/888?text=Cleaning' },
-  { id: 4, title: '영양제 챙겨 먹기', category: '공식 챌린지', participants: 120, tags: ['매일', '2주동안'], img: 'https://via.placeholder.com/400x250/eee/888?text=Vitamin' },
-  { id: 5, title: '경제 뉴스 기사 읽기', category: '공식 챌린지', participants: 85, tags: ['주5회', '4주동안'], img: 'https://via.placeholder.com/400x250/eee/888?text=News' },
-  { id: 6, title: '하루 물 1L 마시기', category: '공식 챌린지', participants: 340, tags: ['매일', '습관'], img: 'https://via.placeholder.com/400x250/eee/888?text=Water' },
-];
-
 export default function Main() {
   const [activeMenu, setActiveMenu] = useState('홈');
-  const navigate = useNavigate(); 
+  const [challenges, setChallenges] = useState([]); // 백엔드 데이터 저장소
+  const navigate = useNavigate();
+
+  // 1. 컴포넌트 실행 시 백엔드(3000번)에서 데이터 가져오기
+  useEffect(() => {
+    axios.get('http://localhost:3000/api/challenges')
+      .then(response => {
+        setChallenges(response.data);
+      })
+      .catch(error => {
+        console.error('데이터 로드 실패:', error);
+      });
+  }, []);
+
+  // 2. 유저 아이콘 클릭 핸들러 (로그인 체크)
+  const handleUserClick = () => {
+    const storedUser = localStorage.getItem('user');
+    
+    if (storedUser) {
+      // 로그인 O: 환영 메시지 & (추후) 마이페이지 이동
+      const userInfo = JSON.parse(storedUser);
+      alert(`${userInfo.nickname}님, 안녕하세요! (마이페이지로 이동합니다)`);
+      // navigate('/mypage'); 
+    } else {
+      // 로그인 X: 로그인 페이지로 이동
+      navigate('/login');
+    }
+  };
+
+  // 3. 로그아웃 핸들러 (테스트용)
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    alert('로그아웃 되었습니다.');
+    window.location.reload(); 
+  };
 
   return (
     <div className="app-container">
-      {/* 1. 상단 헤더 */}
+      {/* 상단 헤더 */}
       <header>
         <div className="inner-container header-content">
           <div className="logo">
@@ -38,7 +64,6 @@ export default function Main() {
             <input type="text" className="search-input" placeholder="어떤 습관을 가지고 싶으신가요?" />
           </div>
 
-          {/* PC용 네비게이션 메뉴 */}
           <nav className="pc-nav">
             {['홈', '탐색', '피드', '마이페이지'].map(menu => (
               <div 
@@ -50,15 +75,27 @@ export default function Main() {
               </div>
             ))}
             <div className="icon-btn"><Bell size={24} color="#333" /></div>
+            
+            {/* ★ 핵심: 유저 아이콘 클릭 시 로그인 체크 */}
             <div 
               className="icon-btn" 
-              onClick={() => navigate('/login')}
+              onClick={handleUserClick}
               style={{ cursor: 'pointer' }}
             >
               <User size={24} color="#333" />
             </div>
             
             <button className="btn-primary">챌린지 개설</button>
+
+            {/* 로그인 상태일 때만 보이는 로그아웃 버튼 */}
+            {localStorage.getItem('user') && (
+              <button 
+                onClick={handleLogout} 
+                style={{marginLeft: '10px', padding: '5px 10px', fontSize: '0.8rem', cursor: 'pointer', background: '#eee', border: 'none', borderRadius: '4px'}}
+              >
+                로그아웃
+              </button>
+            )}
           </nav>
         </div>
       </header>
@@ -78,6 +115,7 @@ export default function Main() {
             <p style={{color: '#666', marginTop: '10px', fontSize: '0.9rem'}}>지금 시작하면 1,000 포인트 즉시 지급!</p>
           </div>
         </div>
+
         <section style={{marginBottom: '60px'}}>
           <div className="section-title">
             카테고리별 챌린지
@@ -92,32 +130,51 @@ export default function Main() {
             ))}
           </div>
         </section>
+
         <section>
           <div className="section-title">
             🔥 실시간 인기 챌린지
           </div>
           <div className="card-grid">
-            {CHALLENGES.map((item) => (
-              <div key={item.id} className="card">
-                <div className="card-img-wrapper">
-                  <img src={item.img} alt={item.title} className="card-img" />
-                  <span className="participants-badge">👤 {item.participants}명 참여중</span>
+            {/* ★ 핵심: 백엔드 데이터(challenges) 렌더링 */}
+            {challenges.length > 0 ? (
+              challenges.map((item) => (
+                <div key={item.id} className="card">
+                  <div className="card-img-wrapper">
+                    {/* 이미지가 있으면 보여주고 없으면 회색 박스 */}
+                    {item.img ? (
+                      <img src={item.img} alt={item.title} className="card-img" />
+                    ) : (
+                      <div style={{width: '100%', height: '100%', backgroundColor: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888'}}>No Image</div>
+                    )}
+                    <span className="participants-badge">👤 {item.participants}명 참여중</span>
+                  </div>
+                  <div className="card-body">
+                    <div className="card-cat">{item.category}</div>
+                    <div className="card-title">{item.title}</div>
+                    <div className="card-tags">
+                      {Array.isArray(item.tags) ? item.tags.join(' · ') : '#챌린지'}
+                    </div>
+                  </div>
                 </div>
-                <div className="card-body">
-                  <div className="card-cat">{item.category}</div>
-                  <div className="card-title">{item.title}</div>
-                  <div className="card-tags">{item.tags.join(' · ')}</div>
-                </div>
+              ))
+            ) : (
+              <div style={{gridColumn: '1 / -1', textAlign: 'center', padding: '40px', color: '#888'}}>
+                <p>등록된 챌린지가 없습니다.</p>
+                <p style={{fontSize: '0.9rem'}}>DB에 데이터를 추가해보세요!</p>
               </div>
-            ))}
+            )}
           </div>
         </section>
       </main>
+
       <div className="mobile-bottom-nav">
         <div className="nav-item active"><Compass size={24} /><div>탐색</div></div>
         <div className="nav-item"><PlusSquare size={24} /><div>개설</div></div>
         <div className="nav-item"><CheckSquare size={24} /><div>인증</div></div>
-        <div className="nav-item" onClick={() => navigate('/login')}>
+        
+        {/* ★ 모바일 하단바 클릭 시에도 로그인 체크 */}
+        <div className="nav-item" onClick={handleUserClick}>
           <User size={24} /><div>MY</div>
         </div>
       </div>
