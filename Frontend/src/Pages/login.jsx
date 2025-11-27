@@ -70,7 +70,9 @@ export default function Login() {
           <span className="divider">|</span>
           <span className="link-item">비밀번호 찾기</span>
           <span className="divider">|</span>
-          <span className="link-item" style={{color: '#ff4d4f', fontWeight: 'bold'}}>회원가입</span>
+          <span className="link-item" style={{color: '#ff4d4f', fontWeight: 'bold'}}onClick={() => navigate('/signup')}
+        >회원가입</span>
+          
         </div>
 
         {/* 소셜 로그인 */}

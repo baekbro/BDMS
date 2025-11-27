@@ -19,5 +19,6 @@ db.Sequelize = Sequelize;
 
 // 모델 연결
 db.Challenge = require('./challenge')(sequelize, Sequelize);
+db.User = require('./user')(sequelize, Sequelize);
 
 module.exports = db;
