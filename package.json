@@ -1,0 +1,16 @@
+{
+  "name": "my-web-service",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "concurrently \"npm run backend\" \"npm run frontend\"",
+
+    "//": "Backend 수정: main.go가 cmd/app 폴더 안에 있으므로 경로를 지정해줍니다.",
+    "backend": "cd Backend/my-crypto-wallet && go run cmd/app/main.go",
+
+    "//": "Frontend 수정: Vite를 사용 중이시므로 start가 아닌 dev 명령어를 사용합니다.",
+    "frontend": "cd Frontend && npm run dev"
+  },
+  "devDependencies": {
+    "concurrently": "^8.0.0"
+  }
+}

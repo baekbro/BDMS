@@ -1,30 +1,33 @@
 package main
 
 import (
-	"fmt"
 	"log"
-	"my-crypto-wallet/internal/adapter/blockchain" // 패키지 경로 주의!
+	"my-crypto-wallet/internal/adapter/blockchain"
+	"my-crypto-wallet/internal/adapter/handler" // 방금 만든 핸들러 패키지
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	// 1. 연결할 이더리움 노드 주소 (Sepolia 테스트넷 공용 RPC URL)
-	// (Infura나 Alchemy 키 없이도 쓸 수 있는 공용 노드입니다)
-	rpcURL := "https://rpc.sepolia.org" 
-
-	fmt.Println("🔗 이더리움(Sepolia) 네트워크 연결 시도 중...")
-
-	// 2. 클라이언트 생성 (연결)
+	// 1. 이더리움 네트워크 연결 (서버 켜질 때 한 번만 연결)
+	rpcURL := "https://1rpc.io/sepolia"
 	ethClient, err := blockchain.NewEthereumClient(rpcURL)
 	if err != nil {
-		log.Fatalf("❌ 연결 오류 발생: %v", err)
+		log.Fatalf("❌ 이더리움 연결 실패: %v", err)
 	}
-	fmt.Println("✅ 이더리움 클라이언트 연결 성공!")
+	log.Println("✅ 이더리움 클라이언트 연결 완료")
 
-	// 3. 최신 블록 번호 가져오기
-	blockNum, err := ethClient.GetLatestBlockNumber()
-	if err != nil {
-		log.Fatalf("❌ 블록 조회 오류 발생: %v", err)
-	}
+	// 2. Gin 웹 서버 생성 (Express의 app = express() 와 비슷)
+	r := gin.Default()
 
-	fmt.Printf("🧱 현재 Sepolia 네트워크의 최신 블록 번호: %s\n", blockNum.String())
+	// 3. 핸들러 초기화 (의존성 주입)
+	walletHandler := &handler.WalletHandler{Client: ethClient}
+
+	// 4. 라우팅 설정
+	// GET /balance 요청이 오면 walletHandler.GetBalance 함수 실행
+	r.GET("/balance", walletHandler.GetBalance)
+	r.POST("/transfer", walletHandler.Transfer)
+	// 5. 서버 시작 (8080 포트)
+	log.Println("🚀 서버가 8080 포트에서 시작되었습니다!")
+	r.Run(":8080")
 }
