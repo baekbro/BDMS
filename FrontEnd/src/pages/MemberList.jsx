@@ -75,7 +75,7 @@ const MemberList = () => {
       {/* 상단 헤더 및 검색창 (기존 코드 유지) */}
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
         <h2>📋 전체 회원 리스트 ({filteredMembers.length}명)</h2>
-        <button onClick={() => navigate('/admin')} style={btnStyle}>뒤로가기</button>
+        <button onClick={() => navigate('/admin/dashboard')} style={btnStyle}>뒤로가기</button>
       </div>
       
       <div style={{ marginBottom: '20px' }}>

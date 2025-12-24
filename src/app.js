@@ -23,6 +23,7 @@ app.use('/api/attendance', attendanceRoutes);
 app.use('/api/stats', statsRoutes);
 app.use('/api/auth', authRoutes);
 
+
 app.get('/', (req, res) => {
     res.send('Gym Management Server Running...');
 });

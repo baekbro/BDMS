@@ -59,3 +59,38 @@ exports.getDashboardStats = async (req, res) => {
     res.status(500).json({ message: '서버 오류' });
   }
 };
+
+// statsController.js 맨 아래에 추가
+
+// 2. 월별 히스토리 조회 (매출 or 회원수)
+exports.getMonthlyHistory = async (req, res) => {
+  try {
+    const { type } = req.query; // 프론트에서 'revenue'(매출) 또는 'member'(회원)를 보냄
+    let sql = '';
+
+    if (type === 'revenue') {
+      // 월별 총 매출 조회 (YYYY-MM 형식으로 그룹화)
+      sql = `
+        SELECT DATE_FORMAT(created_at, '%Y-%m') as month, SUM(total_amount) as value 
+        FROM members 
+        GROUP BY month 
+        ORDER BY month DESC
+      `;
+    } else {
+      // 월별 신규 회원 수 조회
+      sql = `
+        SELECT DATE_FORMAT(created_at, '%Y-%m') as month, COUNT(*) as value 
+        FROM members 
+        GROUP BY month 
+        ORDER BY month DESC
+      `;
+    }
+
+    const [rows] = await pool.query(sql);
+    res.json(rows);
+
+  } catch (error) {
+    console.error('월별 기록 조회 실패:', error);
+    res.status(500).json({ message: '서버 오류' });
+  }
+};
